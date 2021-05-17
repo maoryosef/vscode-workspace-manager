@@ -4,13 +4,17 @@ import { factory } from './providers';
 import { InfoProvider } from './providers/types';
 
 async function findWorkspace(infoProvider: InfoProvider, file: string) {
-	const info = await infoProvider.getInfo();
-
-	if (info) {
-		return Object.values(info).find(ws =>
-			file.startsWith(getFullPath(ws.location))
-		);
-	}		
+	try {
+		const info = await infoProvider.getInfo();
+	
+		if (info) {
+			return Object.values(info).find(ws =>
+				file.startsWith(getFullPath(ws.location))
+			);
+		}
+	} catch (e) {
+		vscode.window.showErrorMessage('Failed getting workspace', e);
+	}
 }
 
 export async function activate(context: vscode.ExtensionContext) {

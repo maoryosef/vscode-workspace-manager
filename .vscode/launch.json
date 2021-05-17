@@ -23,13 +23,26 @@
 			"request": "launch",
 			"args": [
 				"--extensionDevelopmentPath=${workspaceFolder}",
-				"--extensionTestsPath=${workspaceFolder}/out/test/suite/index",
-				"${workspaceFolder}/test-fixtures/basic-workspace"
+				"--extensionTestsPath=${workspaceFolder}/out/test/${input:testSuite}/index",
+				"${workspaceFolder}/test-fixtures/${input:testSuite}"
 			],
 			"outFiles": [
 				"${workspaceFolder}/out/test/**/*.js"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
+		}
+	],
+	"inputs": [
+		{
+			"type": "pickString",
+			"id": "testSuite",
+			"description": "Which suite to run",
+			"options": [
+				"basic-workspace",
+				"no-workspace",
+				"nested-workspace"
+			],
+			"default": "basic-workspace",
 		}
 	]
 }

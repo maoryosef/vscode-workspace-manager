@@ -1,21 +1,24 @@
 import * as path from 'path';
+import { readdirSync } from 'fs';
 
 import { runTests } from 'vscode-test';
 
+const getDirectories = () =>
+  readdirSync(__dirname, { withFileTypes: true })
+    .filter(dirent => dirent.isDirectory())
+    .map(dirent => dirent.name);
+
 async function main() {
 	try {
-		// The folder containing the Extension Manifest package.json
-		// Passed to `--extensionDevelopmentPath`
 		const extensionDevelopmentPath = path.resolve(__dirname, '../../');
+		const testSuites = getDirectories();
 
-		// The path to test runner
-		// Passed to --extensionTestsPath
-		const extensionTestsPath = path.resolve(__dirname, './suite/index');
-		
-		const testWorkspace = path.resolve(__dirname, '../../test-fixtures/basic-workspace');
-
-		// Download VS Code, unzip it and run the integration test
-		await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: ['--disable-extensions', testWorkspace] });
+		for (const suite of testSuites) {
+			const extensionTestsPath = path.resolve(__dirname, `./${suite}/index`);
+			const testWorkspace = path.resolve(__dirname, `../../test-fixtures/${suite}`);
+			
+			await runTests({ extensionDevelopmentPath, extensionTestsPath, launchArgs: ['--disable-extensions', testWorkspace] });
+		}
 	} catch (err) {
 		console.error('Failed to run tests');
 		process.exit(1);
