@@ -13,6 +13,7 @@ async function findWorkspace(infoProvider: InfoProvider, file: string) {
 			);
 		}
 	} catch (e) {
+		console.error('Failed getting workspace', e);
 		vscode.window.showErrorMessage('Failed getting workspace', e);
 	}
 }
@@ -25,7 +26,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		const workspace = await findWorkspace(infoProvider, currentFile!);
 
 		if (workspace) {
-			vscode.window.showInformationMessage(getFullPath(workspace.location) + '456');
 			return getFullPath(workspace.location);
 		}
 	});
